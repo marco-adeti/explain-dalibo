@@ -1,0 +1,27 @@
+---
+# tasks file for apache2
+
+- name: ensure apache2 is at the latest version
+  ansible.builtin.apt:
+      name: "{{ web_prereq }}"
+      state: latest
+  become: yes
+  become_method: sudo
+
+- name: Copy apache2 site config file
+  ansible.builtin.template:
+      src: ./templates/apache2.conf
+      dest: "/etc/apache2/sites-available/{{ app_name }}.conf"
+
+- name: Remove default apache2 site config
+  ansible.builtin.file:
+      path: /etc/apache2/sites-enabled/000-default.conf
+      state: absent
+
+- name: Enable apache2 site
+  ansible.builtin.file:
+      src: "/etc/apache2/sites-available/{{ app_name }}.conf"
+      dest: /etc/apache2/sites-enabled/{{ app_name }}.conf
+      state: link
+      force: yes
+  notify: Restart apache2

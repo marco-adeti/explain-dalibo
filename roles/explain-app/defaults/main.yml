@@ -1,0 +1,15 @@
+---
+app_name: explain001
+app_user: "{{app_name}}"
+app_group: www-data 
+app_repo: https://github.com/dalibo/explain.dalibo.com.git
+app_version: v2.9.0
+app_secret: aSup3rS33kret
+app_prereq:
+  - python3-flask 
+  - python3-psycopg2 
+  - python3-flask-migrate 
+  - python3-flask-sqlalchemy 
+  - python3-flaskext.wtf 
+  - python3-sqlalchemy 
+  - python3-werkzeug

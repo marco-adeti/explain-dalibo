@@ -1,0 +1,10 @@
+- hosts: localhost
+  become: yes
+  pre_tasks:
+      - include_tasks: prerequisites.yaml
+        tags:
+            - prerequisites
+  roles:
+      - { role: "postgres", tags: "postgres" }
+      - { role: "explain-app", tags: "explain-app" }
+      - { role: "apache2", tags: "apache2" }

@@ -1,0 +1,11 @@
+---
+pg_dbhost: 127.0.0.1
+pg_dbname: dbexplain01
+pg_dbuser: uexplain01
+pg_dbpass: overrideme
+pg_prereq:
+  - postgresql
+  - postgresql-contrib
+  - postgresql-client
+  - libpq-dev
+

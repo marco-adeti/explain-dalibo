@@ -1,0 +1,15 @@
+- name: Install prerequisite packages
+  ansible.builtin.apt:
+      update_cache: yes
+      name: "{{item}}"
+      state: latest
+  loop:
+      - sudo
+      - git
+
+- name: Install virtualenv via pip
+  ansible.builtin.pip:
+      name: 
+        - virtualenv
+        - psycopg2
+      executable: pip3

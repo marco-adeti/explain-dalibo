@@ -1,0 +1,12 @@
+---
+# handlers file for explain-app
+
+- name: Init DB
+  ansible.builtin.command: flask db upgrade
+  args:
+    chdir: "/srv/{{app_name}}"
+  environment: 
+    FLASK_APP: app
+  become: yes
+  become_user:  "{{app_user}}"
+

@@ -1,0 +1,66 @@
+---
+# tasks file for explain-app
+- name: Create user for application
+  ansible.builtin.user:
+    name: "{{app_user}}"
+    group: "{{app_group}}"
+
+- name: Create application directory
+  ansible.builtin.file:
+    path: "/srv/{{ app_name }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: g+w
+    state: directory
+
+- name: Clone app repo into releases
+  ansible.builtin.git:
+    repo: "{{app_repo}}"
+    dest: "/srv/{{ app_name }}/"
+    depth: 1
+    version: "{{ app_version }}"
+  become: yes
+  become_user:  "{{app_user}}"
+
+- name: Copy application config
+  ansible.builtin.template:
+    src: ./templates/config.py
+    dest: "/srv/{{ app_name }}/instance/config.py"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: g+w
+  become: yes
+  notify: Init DB
+
+- name: Copy wsgi wrapper
+  ansible.builtin.template:
+    src: ./templates/explain.wsgi
+    dest: "/srv/{{ app_name }}.wsgi"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: g+w
+  become: yes
+
+- name: ensure explain prerequisites
+  ansible.builtin.apt:
+    name: "{{ app_prereq }}"
+    state: latest
+  become: yes
+
+#- name: ensure explain prerequisites
+#  ansible.builtin.apt:
+#    name: [virtualenv]
+#    state: latest
+#  become: yes
+#- name: Install python packages in a virtualenv
+#  ansible.builtin.pip:
+#    requirements: "/srv/{{ app_name }}/requirements.txt"
+#    virtualenv: "/srv/{{ app_name }}-/env"
+
+- name: Change file ownership, group and permissions
+  ansible.builtin.file:
+    path: /srv/{{ app_name }}
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: g+w
+    recurse: yes
